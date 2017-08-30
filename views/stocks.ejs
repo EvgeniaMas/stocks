@@ -1,0 +1,160 @@
+<% include header %>
+
+
+            <div class="inner cover" id="app">
+                <h1 class="cover-heading">CHAT ROOM</h1>
+                <p class="lead"><%- lead %></p>
+                <div class="chat-wrapper">
+                    <div id="user-form" class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="input-group input-group-lg">
+                                    <input id="username" class="form-control" type="text" placeholder="Your name or nickname...">
+                                    <span class="input-group-btn">
+                                        <input type="submit" class="btn btn-success btn-lg" value="Enter">
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>                   
+
+
+
+                    <div id="message-area" class="row" style="display:none">
+                        <div class="col-xs-9">
+                            <div class="card card-inverse">
+                                <div class="card-header card-success">
+                                    Messages
+                                </div>
+                                <div class="card-block" id="chat-block">
+                                    <ul id="chat" class="list-unstyled">
+                                    </ul>
+                                </div>
+                                <div class="card-footer">
+                                    <form id="message-form" autocomplete="off">
+                                        <div class="input-group input-group-sm">
+                                            <input id="message" class="form-control input-sm" type="text" placeholder="Type here...">
+                                            <span class="input-group-btn">
+                                                <input type="submit" class="btn btn-success btn-sm" value="Send message">
+                                            </span>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="card card-inverse">
+                                <div class="card-header card-success" id="online-users-header">
+                                    <span class="card-title">Users in the rooom:</span>
+                                </div>
+                                <div class="card-block" id="online-users-block">
+                                    <ul id="users"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mastfoot">
+                <div class="inner">
+                    <p class ="author">Built by Evgeniia S.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<% include footer %>
+
+
+
+
+
+<script type="text/javascript">
+var height = 500, 
+    width = 500, 
+    margin=30,
+    rawData = [
+        {x: 10, y: 67}, {x: 20, y: 74},{x: 30, y: 63},
+        {x: 40, y: 56}, {x: 50, y: 24}, {x: 60, y: 26},
+        {x: 70, y: 19}, {x: 80, y: 42}, {x: 90, y: 88}
+    ],
+    data=[];
+     
+// создание объекта svg
+var svg = d3.select("body").append("svg")
+        .attr("class", "axis")
+        .attr("width", width)
+        .attr("height", height);
+ 
+// длина оси X= ширина контейнера svg - отступ слева и справа
+var xAxisLength = width - 2 * margin;     
+  
+// длина оси Y = высота контейнера svg - отступ сверху и снизу
+var yAxisLength = height - 2 * margin;
+    
+// функция интерполяции значений на ось Х  
+var scaleX = d3.scale.linear()
+            .domain([0, 100])
+            .range([0, xAxisLength]);
+             
+// функция интерполяции значений на ось Y
+var scaleY = d3.scale.linear()
+            .domain([100, 0])
+            .range([0, yAxisLength]);
+// масштабирование реальных данных в данные для нашей координатной системы
+for(i=0; i<rawData.length; i++)
+    data.push({x: scaleX(rawData[i].x)+margin, y: scaleY(rawData[i].y) + margin});
+             
+// создаем ось X   
+var xAxis = d3.svg.axis()
+             .scale(scaleX)
+             .orient("bottom");
+// создаем ось Y             
+var yAxis = d3.svg.axis()
+             .scale(scaleY)
+             .orient("left");
+              
+ // отрисовка оси Х             
+svg.append("g")       
+     .attr("class", "x-axis")
+     .attr("transform",  // сдвиг оси вниз и вправо
+         "translate(" + margin + "," + (height - margin) + ")")
+    .call(xAxis);
+ 
+ // отрисовка оси Y 
+svg.append("g")       
+    .attr("class", "y-axis")
+    .attr("transform", // сдвиг оси вниз и вправо на margin
+            "translate(" + margin + "," + margin + ")")
+    .call(yAxis);
+ 
+// создаем набор вертикальных линий для сетки   
+d3.selectAll("g.x-axis g.tick")
+    .append("line")
+    .classed("grid-line", true)
+    .attr("x1", 0)
+    .attr("y1", 0)
+    .attr("x2", 0)
+    .attr("y2", - (yAxisLength));
+     
+// рисуем горизонтальные линии координатной сетки
+d3.selectAll("g.y-axis g.tick")
+    .append("line")
+    .classed("grid-line", true)
+    .attr("x1", 0)
+    .attr("y1", 0)
+    .attr("x2", xAxisLength)
+    .attr("y2", 0);
+ 
+// функция, создающая по массиву точек линии
+var line = d3.svg.line()
+            .x(function(d){return d.x;})
+            .y(function(d){return d.y;});
+// добавляем путь
+svg.append("g").append("path")
+.attr("d", line(data))
+.style("stroke", "steelblue")
+.style("stroke-width", 2);
+</script>
